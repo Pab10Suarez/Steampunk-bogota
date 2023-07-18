@@ -7,6 +7,7 @@ public class Enemigo : MonoBehaviour
     public float speed;
     public float chaseRadius;
     public float attackRadius;
+    public Transform homePos;
 
     //public bool shouldRotate;
 
@@ -50,15 +51,21 @@ public class Enemigo : MonoBehaviour
         if(isInChaseRange && !isInAttackRange)
         {
             MoveCharacter(movement);
-        }
-        if(isInAttackRange)
+        } else if(isInAttackRange)
         {
             rb.velocity = Vector2.zero;
+        } else 
+        {
+            goHome();
         }
     }
 
     private void MoveCharacter(Vector2 dir)
     {
-        rb.MovePosition((Vector2)transform.position + (dir * speed * Time.deltaTime));
+        transform.position = Vector3.MoveTowards(transform.position, target.transform.position, speed * Time.deltaTime);
+    }
+
+    private void goHome(){
+        transform.position = Vector3.MoveTowards(transform.position, homePos.position, (speed / 2) * Time.deltaTime);
     }
 }
