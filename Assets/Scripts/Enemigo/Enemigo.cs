@@ -13,7 +13,7 @@ public class Enemigo : MonoBehaviour
 
     public LayerMask whatIsPlayer;
 
-    private Transform target;
+    public Transform target;
     private Rigidbody2D rb;
     //private Animator animator;
     private Vector2 movement;
@@ -50,7 +50,7 @@ public class Enemigo : MonoBehaviour
     private void FixedUpdate(){
         if(isInChaseRange && !isInAttackRange)
         {
-            MoveCharacter(movement);
+            MoveCharacter();
         } else if(isInAttackRange)
         {
             rb.velocity = Vector2.zero;
@@ -60,12 +60,13 @@ public class Enemigo : MonoBehaviour
         }
     }
 
-    private void MoveCharacter(Vector2 dir)
+    public virtual void MoveCharacter()
     {
         transform.position = Vector3.MoveTowards(transform.position, target.transform.position, speed * Time.deltaTime);
     }
 
-    private void goHome(){
+    private void goHome()
+    {
         transform.position = Vector3.MoveTowards(transform.position, homePos.position, (speed / 2) * Time.deltaTime);
     }
 }
