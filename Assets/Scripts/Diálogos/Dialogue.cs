@@ -9,17 +9,21 @@ public class Dialogue : MonoBehaviour
     [SerializeField] private TMP_Text dialogueText;
     [SerializeField, TextArea(4, 6)] private string[] dialogueLines;
     [SerializeField] private GameObject noButton, siButton;
+    [SerializeField] private Goal goal;
+    [SerializeField] private string finishString;
 
     private float typingTime = 0.05f;
-
     private bool isPlayerInRange;
     private bool didDialogueStart;
     private int lineIndex;
     private bool saidNo;
+    private bool chestCarried;
+    private bool missionFinished;
+    private bool inMission;
 
     void Update()
     {
-        if (isPlayerInRange && Input.GetKeyDown(KeyCode.E))
+        if (isPlayerInRange && Input.GetKeyDown(KeyCode.E) && !inMission)
         {
             if (!didDialogueStart)
             {
@@ -36,16 +40,19 @@ public class Dialogue : MonoBehaviour
             }
         }
 
-        if (lineIndex == dialogueLines.Length && Input.GetKeyDown(KeyCode.E))
+        if (lineIndex == dialogueLines.Length && Input.GetKeyDown(KeyCode.E) && !inMission)
         {
             siButton.SetActive(true);
             noButton.SetActive(true);
         }
 
-        if (saidNo)
+        if (saidNo || missionFinished)
         {
             float moveDistance = 5f * Time.deltaTime;
             transform.Translate(Vector3.right * moveDistance);
+            didDialogueStart = false;
+            dialoguePanel.SetActive(false);
+            Time.timeScale = 1f;
         }
     }
 
@@ -88,10 +95,18 @@ public class Dialogue : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("Player") && !inMission)
         {
             isPlayerInRange = true;
             dialogueMark.SetActive(true);
+        }
+
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            if (chestCarried)
+            {
+                StartCoroutine(ShowFinishLine());
+            }
         }
     }
 
@@ -107,5 +122,44 @@ public class Dialogue : MonoBehaviour
     public void SayNo()
     {
         saidNo = true;
+        siButton.SetActive(false);
+        noButton.SetActive(false);
+    }
+
+    public void SayYes()
+    {
+        goal.StartMission();
+        inMission = true;
+        siButton.SetActive(false);
+        noButton.SetActive(false);
+    }
+
+    public void MissionFinished()
+    {
+        StartCoroutine(ShowFinishLine());
+    }
+
+    private IEnumerator ShowFinishLine()
+    {
+        didDialogueStart = true;
+        dialoguePanel.SetActive(true);
+        dialogueMark.SetActive(false);
+        lineIndex = 0;
+        Time.timeScale = 0f;
+
+        dialogueText.text = string.Empty;
+
+        foreach (char ch in finishString)
+        {
+            dialogueText.text += ch;
+            yield return new WaitForSecondsRealtime(typingTime);
+        }
+
+        missionFinished = true;
+    }
+
+    public void Carry()
+    {
+        chestCarried = true;
     }
 }
