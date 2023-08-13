@@ -899,6 +899,7 @@ MonoBehaviour:
   _bulletPrefab: {fileID: 3968228055719345118, guid: 354d09d63b5caa8488ad142a4df1db1a, type: 3}
   _spawnPoint: {fileID: 659327558}
   _cannon: {fileID: 885550339}
+  destructionTime: 3
 --- !u!114 &908993335
 MonoBehaviour:
   m_ObjectHideFlags: 0

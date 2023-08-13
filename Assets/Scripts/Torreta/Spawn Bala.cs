@@ -4,13 +4,11 @@ using UnityEngine;
 
 public class SpawnBala : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject _bulletPrefab;
-    [SerializeField]
-    private Transform _spawnPoint;
-    [SerializeField]
-    private Transform _cannon;
+    [SerializeField] private GameObject _bulletPrefab;
+    [SerializeField] private Transform _spawnPoint;
+    [SerializeField] private Transform _cannon;
     private float _bulletSpeed = 5f;
+    [SerializeField] private float destructionTime;
 
     void Start()
     {
@@ -28,7 +26,7 @@ public class SpawnBala : MonoBehaviour
             Vector2 bulletDirection = _cannon.right;
             bulletRigidbody.velocity = bulletDirection * _bulletSpeed * -1;
 
-            yield return new WaitForSeconds(Random.Range(.9f, 1.2f));
+            yield return new WaitForSeconds(destructionTime);
             Destroy(newBullet);
         }
     }

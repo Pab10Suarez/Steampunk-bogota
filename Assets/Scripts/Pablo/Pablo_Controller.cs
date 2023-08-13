@@ -9,8 +9,8 @@ public class Pablo_Controller : MonoBehaviour
     Rigidbody2D rb;
     Vector2 movementInput;
     [SerializeField] private float movespeed = 2f;
-    bool canMove=true;
-    bool isMoving=true;
+    bool canMove = true;
+    bool isMoving = true;
     
     void Start()
     {
@@ -22,19 +22,18 @@ public class Pablo_Controller : MonoBehaviour
         if(canMove==true&&movementInput !=Vector2.zero)
         {
             rb.MovePosition(rb.position + movementInput * movespeed * Time.fixedDeltaTime);
-            isMoving=true;
+            isMoving = true;
             Debug.Log(isMoving);
         }
 
         else
         {
-            isMoving=false;
+            isMoving = false;
         }
     }
     
     void OnMove(InputValue movementValue)
     {
         movementInput = movementValue.Get<Vector2>();
-        
     }
 }
